@@ -68,15 +68,37 @@
       font-size: 18px;
     }
 
-    code {
-      display: block;
-      background: #222;
-      color: #00ff88;
-      padding: 12px;
+    .block-output {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: #b66ad6;
+      color: #111;
+      padding: 10px 12px;
       border-radius: 8px;
       margin-top: 10px;
-      font-size: 18px;
-      word-wrap: break-word;
+      font-family: Consolas, monospace;
+      font-size: 20px;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
+    }
+
+    .var-name {
+      background: white;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .function-block {
+      background: #ff8f8f;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .number-block {
+      background: #ffe2e2;
+      padding: 1px 5px;
+      border-radius: 5px;
     }
 
     .note {
@@ -92,6 +114,11 @@
     <h1>Sprite Position Calculator</h1>
 
     <div class="input-row">
+      <label for="spriteName">Sprite Name</label>
+      <input type="text" id="spriteName" value="cube" oninput="calculateSprite()">
+    </div>
+
+    <div class="input-row">
       <label for="topLeftX">Top Left X</label>
       <input type="number" id="topLeftX" value="200" oninput="calculateSprite()">
     </div>
@@ -102,20 +129,20 @@
     </div>
 
     <div class="input-row">
-      <label for="width">Width of Sprite</label>
+      <label for="width">Width</label>
       <input type="number" id="width" value="50" oninput="calculateSprite()">
     </div>
 
     <div class="input-row">
-      <label for="height">Height of Sprite</label>
+      <label for="height">Height</label>
       <input type="number" id="height" value="100" oninput="calculateSprite()">
     </div>
 
     <button onclick="calculateSprite()">Calculate Sprite Code</button>
 
     <div class="output">
-      <p><strong>Your Sprite coordinates and size requirements are :</strong></p>
-      <code id="codeOutput">createSprite(225, 150, 50, 100);</code>
+      <p><strong>Your coordinates and size requirements are :</strong></p>
+      <div class="block-output" id="codeOutput"></div>
     </div>
 
     
@@ -123,6 +150,7 @@
 
   <script>
     function calculateSprite() {
+      var spriteName = document.getElementById("spriteName").value || "cube";
       var topLeftX = Number(document.getElementById("topLeftX").value || 0);
       var topLeftY = Number(document.getElementById("topLeftY").value || 0);
       var width = Number(document.getElementById("width").value || 0);
@@ -130,7 +158,9 @@
 
       var centreX = topLeftX + (width / 2);
       var centreY = topLeftY + (height / 2);
-      document.getElementById("codeOutput").textContent = "createSprite(" + centreX + ", " + centreY + ", " + width + ", " + height + ");";
+      document.getElementById("codeOutput").innerHTML = 
+        "var <span class='var-name'>" + spriteName + "</span> = " +
+        "<span class='function-block'>createSprite(<span class='number-block'>" + centreX + "</span>, <span class='number-block'>" + centreY + "</span>, <span class='number-block'>" + width + "</span>, <span class='number-block'>" + height + "</span>)</span>;";
     }
   </script>
 </body>
