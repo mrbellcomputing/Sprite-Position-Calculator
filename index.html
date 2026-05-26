@@ -111,7 +111,7 @@
 </head>
 <body onload="calculateSprite()">
   <div class="container">
-    <h1>Sprite Position Calculator</h1>
+    <h1>Litcham Sprite Position Calculator</h1>
 
     <div class="input-row">
       <label for="spriteName">Sprite Name</label>
@@ -120,22 +120,22 @@
 
     <div class="input-row">
       <label for="topLeftX">Top Left X</label>
-      <input type="number" id="topLeftX" value="200" oninput="calculateSprite()">
+      <input type="number" id="topLeftX" value="200" step="50" oninput="calculateSprite()">
     </div>
 
     <div class="input-row">
       <label for="topLeftY">Top Left Y</label>
-      <input type="number" id="topLeftY" value="100" oninput="calculateSprite()">
+      <input type="number" id="topLeftY" value="100" step="50" oninput="calculateSprite()">
     </div>
 
     <div class="input-row">
       <label for="width">Width</label>
-      <input type="number" id="width" value="50" oninput="calculateSprite()">
+      <input type="number" id="width" value="50" step="50" oninput="calculateSprite()">
     </div>
 
     <div class="input-row">
       <label for="height">Height</label>
-      <input type="number" id="height" value="100" oninput="calculateSprite()">
+      <input type="number" id="height" value="100" step="50" oninput="calculateSprite()">
     </div>
 
     <button onclick="calculateSprite()">Calculate Sprite Code</button>
