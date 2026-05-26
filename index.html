@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprite Position Calculator</title>
+  <style>
+    body {
+      font-family: Verdana, Arial, sans-serif;
+      background: #FFFCEB;
+      color: #222;
+      padding: 30px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      width: 180px;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    input {
+      width: 200px;
+      padding: 10px;
+      font-size: 18px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #333;
+      color: white;
+    }
+
+    .output {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+
+    code {
+      display: block;
+      background: #222;
+      color: #00ff88;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 18px;
+      word-wrap: break-word;
+    }
+
+    .note {
+      margin-top: 20px;
+      background: #e8f4ff;
+      padding: 12px;
+      border-left: 5px solid #2b7bbb;
+    }
+  </style>
+</head>
+<body onload="calculateSprite()">
+  <div class="container">
+    <h1>Sprite Position Calculator</h1>
+
+    <div class="input-row">
+      <label for="topLeftX">Top Left X</label>
+      <input type="number" id="topLeftX" value="200" oninput="calculateSprite()">
+    </div>
+
+    <div class="input-row">
+      <label for="topLeftY">Top Left Y</label>
+      <input type="number" id="topLeftY" value="100" oninput="calculateSprite()">
+    </div>
+
+    <div class="input-row">
+      <label for="width">Width</label>
+      <input type="number" id="width" value="50" oninput="calculateSprite()">
+    </div>
+
+    <div class="input-row">
+      <label for="height">Height</label>
+      <input type="number" id="height" value="100" oninput="calculateSprite()">
+    </div>
+
+    <button onclick="calculateSprite()">Calculate Sprite Code</button>
+
+    <div class="output">
+      <p><strong>Your coordinates and size requirements are :</strong></p>
+      <code id="codeOutput">createSprite(225, 150, 50, 100);</code>
+    </div>
+
+    
+  </div>
+
+  <script>
+    function calculateSprite() {
+      var topLeftX = Number(document.getElementById("topLeftX").value || 0);
+      var topLeftY = Number(document.getElementById("topLeftY").value || 0);
+      var width = Number(document.getElementById("width").value || 0);
+      var height = Number(document.getElementById("height").value || 0);
+
+      var centreX = topLeftX + (width / 2);
+      var centreY = topLeftY + (height / 2);
+      document.getElementById("codeOutput").textContent = "createSprite(" + centreX + ", " + centreY + ", " + width + ", " + height + ");";
+    }
+  </script>
+</body>
+</html>
