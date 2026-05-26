@@ -4,10 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sprite Position Calculator</title>
+
   <style>
+
     body {
       font-family: Verdana, Arial, sans-serif;
-      background: #FFFCEB;
+      background: #E0E0E0;
       color: #222;
       padding: 30px;
       line-height: 1.5;
@@ -25,11 +27,18 @@
     h1 {
       text-align: center;
       color: #333;
+      font-size: 32px;
     }
 
     label {
       font-weight: bold;
       width: 180px;
+      color: black;
+      font-size: 18px;
+    }
+
+    .purple-label {
+      color: #b66ad6;
     }
 
     .input-row {
@@ -41,8 +50,8 @@
 
     input {
       width: 200px;
-      padding: 10px;
-      font-size: 18px;
+      padding: 8px;
+      font-size: 16px;
       margin-top: 5px;
       box-sizing: border-box;
     }
@@ -50,7 +59,7 @@
     button {
       margin-top: 20px;
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       font-size: 18px;
       font-weight: bold;
       border: none;
@@ -65,103 +74,182 @@
       padding: 15px;
       background: #f0f0f0;
       border-radius: 10px;
-      font-size: 18px;
+      font-size: 16px;
     }
 
     .block-output {
       display: inline-flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 4px;
       background: #b66ad6;
       color: #111;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border-radius: 8px;
       margin-top: 10px;
       font-family: Consolas, monospace;
-      font-size: 20px;
+      font-size: 15px;
       box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
+    }
+
+    .example-block {
+      margin-top: 10px;
+      margin-bottom: 20px;
     }
 
     .var-name {
       background: white;
-      padding: 2px 8px;
+      padding: 2px 6px;
       border-radius: 6px;
     }
 
     .function-block {
       background: #ff8f8f;
-      padding: 4px 8px;
+      padding: 3px 6px;
       border-radius: 6px;
     }
 
     .number-block {
       background: #ffe2e2;
-      padding: 1px 5px;
+      padding: 1px 4px;
       border-radius: 5px;
     }
 
-    .note {
-      margin-top: 20px;
-      background: #e8f4ff;
-      padding: 12px;
-      border-left: 5px solid #2b7bbb;
-    }
   </style>
+
 </head>
+
 <body onload="calculateSprite()">
+
   <div class="container">
-    <h1>Litcham Sprite Position Calculator</h1>
+
+    <h1>Sprite Position Calculator</h1>
+
+    <div class="example-block">
+
+      <div class="block-output">
+
+        var
+        <span class="var-name">cube</span>
+        =
+        <span class="function-block">
+          createSprite(
+          <span class="number-block">X (along)</span>,
+          <span class="number-block">Y (down)</span>,
+          <span class="number-block">width</span>,
+          <span class="number-block">height</span>
+          )
+        </span>;
+
+      </div>
+
+    </div>
 
     <div class="input-row">
       <label for="spriteName">Sprite Name</label>
-      <input type="text" id="spriteName" value="cube" oninput="calculateSprite()">
+      <input type="text"
+             id="spriteName"
+             value="cube"
+             oninput="calculateSprite()">
     </div>
 
     <div class="input-row">
-      <label for="topLeftX">Top Left X</label>
-      <input type="number" id="topLeftX" value="200" step="50" oninput="calculateSprite()">
+      <label class="purple-label" for="topLeftX">Top Left X</label>
+      <input type="number"
+             id="topLeftX"
+             value="200"
+             step="50"
+             oninput="calculateSprite()">
     </div>
 
     <div class="input-row">
-      <label for="topLeftY">Top Left Y</label>
-      <input type="number" id="topLeftY" value="100" step="50" oninput="calculateSprite()">
+      <label class="purple-label" for="topLeftY">Top Left Y</label>
+      <input type="number"
+             id="topLeftY"
+             value="100"
+             step="50"
+             oninput="calculateSprite()">
     </div>
 
     <div class="input-row">
       <label for="width">Width</label>
-      <input type="number" id="width" value="50" step="50" oninput="calculateSprite()">
+      <input type="number"
+             id="width"
+             value="50"
+             step="50"
+             oninput="calculateSprite()">
     </div>
 
     <div class="input-row">
       <label for="height">Height</label>
-      <input type="number" id="height" value="100" step="50" oninput="calculateSprite()">
+      <input type="number"
+             id="height"
+             value="100"
+             step="50"
+             oninput="calculateSprite()">
     </div>
 
-    <button onclick="calculateSprite()">Calculate Sprite Code</button>
+    <button onclick="calculateSprite()">
+      Generate my Codes!
+    </button>
 
     <div class="output">
-      <p><strong>Your coordinates and size requirements are :</strong></p>
+
+      <p>
+        <strong>
+          Your coordinates and size requirements are :
+        </strong>
+      </p>
+
       <div class="block-output" id="codeOutput"></div>
+
     </div>
 
-    
   </div>
 
   <script>
+
     function calculateSprite() {
-      var spriteName = document.getElementById("spriteName").value || "cube";
-      var topLeftX = Number(document.getElementById("topLeftX").value || 0);
-      var topLeftY = Number(document.getElementById("topLeftY").value || 0);
-      var width = Number(document.getElementById("width").value || 0);
-      var height = Number(document.getElementById("height").value || 0);
+
+      var spriteName =
+        document.getElementById("spriteName").value || "cube";
+
+      var topLeftX =
+        Number(document.getElementById("topLeftX").value || 0);
+
+      var topLeftY =
+        Number(document.getElementById("topLeftY").value || 0);
+
+      var width =
+        Number(document.getElementById("width").value || 0);
+
+      var height =
+        Number(document.getElementById("height").value || 0);
 
       var centreX = topLeftX + (width / 2);
       var centreY = topLeftY + (height / 2);
-      document.getElementById("codeOutput").innerHTML = 
-        "var <span class='var-name'>" + spriteName + "</span> = " +
-        "<span class='function-block'>createSprite(<span class='number-block'>" + centreX + "</span>, <span class='number-block'>" + centreY + "</span>, <span class='number-block'>" + width + "</span>, <span class='number-block'>" + height + "</span>)</span>;";
+
+      document.getElementById("codeOutput").innerHTML =
+
+        "var <span class='var-name'>" +
+
+        spriteName +
+
+        "</span> = " +
+
+        "<span class='function-block'>createSprite(" +
+
+        "<span class='number-block'>" + centreX + "</span>, " +
+
+        "<span class='number-block'>" + centreY + "</span>, " +
+
+        "<span class='number-block'>" + width + "</span>, " +
+
+        "<span class='number-block'>" + height + "</span>)</span>;";
+
     }
+
   </script>
+
 </body>
 </html>
