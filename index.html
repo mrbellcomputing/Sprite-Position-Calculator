@@ -37,7 +37,6 @@
       background: #333;
       color: white;
 
-      border: none;
       border-radius: 8px;
 
       padding: 10px 14px;
@@ -46,6 +45,10 @@
       font-weight: bold;
 
       cursor: pointer;
+
+      text-decoration: none;
+
+      display: inline-block;
     }
 
     .browser-button:hover {
@@ -194,12 +197,14 @@
 
   <div class="container">
 
-    <button class="browser-button"
-      onclick="openInBrowser()">
+    <a class="browser-button"
+       href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/"
+       target="_blank"
+       rel="noopener noreferrer">
 
       Open in Browser
 
-    </button>
+    </a>
 
     <h1>Sprite Position Calculator</h1>
 
@@ -307,27 +312,6 @@
   </div>
 
   <script>
-
-    function openInBrowser() {
-
-      var newWindow = window.open(
-        "https://mrbellcomputing.github.io/Sprite-Position-Calculator/",
-        "_blank"
-      );
-
-      if (newWindow) {
-
-        newWindow.focus();
-
-      } else {
-
-        alert(
-          "Please allow pop-ups to open in browser."
-        );
-
-      }
-
-    }
 
     function calculateSprite() {
 
