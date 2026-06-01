@@ -90,6 +90,12 @@
       box-sizing: border-box;
     }
 
+    input[readonly] {
+      background: #f4f4f4;
+      color: #333;
+      border: 1px solid #aaa;
+    }
+
     select {
       width: 220px;
       padding: 8px;
@@ -118,12 +124,6 @@
       font-family: Consolas, monospace;
       font-size: 15px;
       box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
-    }
-
-    .code-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
     }
 
     .var-name {
@@ -243,7 +243,7 @@
     <h1>Sprite Position Calculator</h1>
 
     <div class="block-output">
-      var <span class="var-name">cube</span> =
+      var <span class="var-name">sprite1</span> =
       <span class="function-block">
         createSprite(
         <span class="number-block">X</span>,
@@ -273,7 +273,7 @@
 
         <div class="control-group">
           <label>Sprite Name</label>
-          <input type="text" id="spriteName" value="wall1">
+          <input type="text" id="spriteName" value="sprite1" readonly>
         </div>
 
         <div class="control-group">
@@ -308,13 +308,8 @@
     </div>
 
     <div class="output">
-      <p><strong>Current sprite code:</strong></p>
+      <p><strong>Selected sprite code:</strong></p>
       <div class="block-output" id="codeOutput"></div>
-    </div>
-
-    <div class="output">
-      <p><strong>All saved sprite codes:</strong></p>
-      <div class="code-list" id="allCodeOutput"></div>
     </div>
 
   </div>
@@ -325,8 +320,18 @@
     let startY = 0;
     let sprites = [];
     let selectedSpriteId = null;
+    let nextSpriteNumber = 1;
 
     const grid = document.getElementById("gameGrid");
+
+    function getNextSpriteName() {
+      return "sprite" + nextSpriteNumber;
+    }
+
+    function prepareNextSpriteName() {
+      document.getElementById("spriteName").value = getNextSpriteName();
+      calculateSprite();
+    }
 
     function getGridPosition(event) {
       const rect = grid.getBoundingClientRect();
@@ -345,6 +350,9 @@
     function startDrawing(event) {
       event.preventDefault();
 
+      selectedSpriteId = null;
+      document.getElementById("spriteSelector").value = "";
+
       grid.setPointerCapture(event.pointerId);
 
       const position = getGridPosition(event);
@@ -353,7 +361,9 @@
       startX = position.x;
       startY = position.y;
 
+      prepareNextSpriteName();
       updateDrawing(startX, startY, startX, startY);
+      renderSavedSprites();
     }
 
     function drawingMove(event) {
@@ -426,7 +436,7 @@
     }
 
     function getCurrentSpriteData() {
-      const name = document.getElementById("spriteName").value || "sprite1";
+      const name = document.getElementById("spriteName").value || getNextSpriteName();
       const left = Number(document.getElementById("topLeftX").value || 0);
       const top = Number(document.getElementById("topLeftY").value || 0);
       const width = Number(document.getElementById("width").value || 0);
@@ -446,28 +456,35 @@
       const centreX = sprite.left + (sprite.width / 2);
       const centreY = sprite.top + (sprite.height / 2);
 
-      return {
-        centreX: centreX,
-        centreY: centreY,
-        html:
-          "var <span class='var-name'>" +
-          sprite.name +
-          "</span> = " +
-          "<span class='function-block'>createSprite(" +
-          "<span class='number-block'>" + centreX + "</span>, " +
-          "<span class='number-block'>" + centreY + "</span>, " +
-          "<span class='number-block'>" + sprite.width + "</span>, " +
-          "<span class='number-block'>" + sprite.height + "</span>)</span>;"
-      };
+      return "var <span class='var-name'>" +
+        sprite.name +
+        "</span> = " +
+        "<span class='function-block'>createSprite(" +
+        "<span class='number-block'>" + centreX + "</span>, " +
+        "<span class='number-block'>" + centreY + "</span>, " +
+        "<span class='number-block'>" + sprite.width + "</span>, " +
+        "<span class='number-block'>" + sprite.height + "</span>)</span>;";
     }
 
     function addCurrentSprite() {
       const sprite = getCurrentSpriteData();
+
+      sprite.name = getNextSpriteName();
+
       sprites.push(sprite);
       selectedSpriteId = sprite.id;
+
+      nextSpriteNumber = nextSpriteNumber + 1;
+
       renderSavedSprites();
       renderDropdown();
-      renderAllCode();
+      selectSprite(sprite.id);
+
+      document.getElementById("spriteName").value = getNextSpriteName();
+      selectedSpriteId = null;
+      document.getElementById("spriteSelector").value = "";
+      renderSavedSprites();
+      calculateSprite();
     }
 
     function renderSavedSprites() {
@@ -522,14 +539,19 @@
       document.getElementById("spriteSelector").value = id;
 
       updateBoxFromInputs();
-      calculateSprite();
+      document.getElementById("codeOutput").innerHTML = spriteToCode(sprite);
       renderSavedSprites();
     }
 
     function selectSpriteFromDropdown() {
       const id = Number(document.getElementById("spriteSelector").value);
 
-      if (!id) return;
+      if (!id) {
+        selectedSpriteId = null;
+        prepareNextSpriteName();
+        renderSavedSprites();
+        return;
+      }
 
       selectSprite(id);
     }
@@ -545,17 +567,19 @@
 
       renderSavedSprites();
       renderDropdown();
-      renderAllCode();
-      calculateSprite();
+      prepareNextSpriteName();
     }
 
     function clearAllSprites() {
       sprites = [];
       selectedSpriteId = null;
+      nextSpriteNumber = 1;
+
+      document.getElementById("spriteName").value = "sprite1";
+      document.getElementById("spriteSelector").innerHTML = '<option value="">No saved sprites</option>';
 
       renderSavedSprites();
-      renderDropdown();
-      renderAllCode();
+      calculateSprite();
     }
 
     function renderDropdown() {
@@ -563,13 +587,10 @@
 
       selector.innerHTML = "";
 
-      if (sprites.length === 0) {
-        const option = document.createElement("option");
-        option.value = "";
-        option.textContent = "No saved sprites";
-        selector.appendChild(option);
-        return;
-      }
+      const blankOption = document.createElement("option");
+      blankOption.value = "";
+      blankOption.textContent = "New sprite";
+      selector.appendChild(blankOption);
 
       sprites.forEach(function(sprite) {
         const option = document.createElement("option");
@@ -580,30 +601,14 @@
 
       if (selectedSpriteId !== null) {
         selector.value = selectedSpriteId;
+      } else {
+        selector.value = "";
       }
-    }
-
-    function renderAllCode() {
-      const allCodeOutput = document.getElementById("allCodeOutput");
-
-      allCodeOutput.innerHTML = "";
-
-      if (sprites.length === 0) {
-        allCodeOutput.textContent = "No saved sprites yet.";
-        return;
-      }
-
-      sprites.forEach(function(sprite) {
-        const line = document.createElement("div");
-        line.className = "block-output";
-        line.innerHTML = spriteToCode(sprite).html;
-        allCodeOutput.appendChild(line);
-      });
     }
 
     function calculateSprite() {
       const currentSprite = getCurrentSpriteData();
-      document.getElementById("codeOutput").innerHTML = spriteToCode(currentSprite).html;
+      document.getElementById("codeOutput").innerHTML = spriteToCode(currentSprite);
     }
 
     grid.addEventListener("pointerdown", startDrawing);
@@ -611,17 +616,35 @@
     grid.addEventListener("pointerup", stopDrawing);
     grid.addEventListener("pointercancel", stopDrawing);
 
-    ["spriteName", "topLeftX", "topLeftY", "width", "height"].forEach(function(id) {
+    ["topLeftX", "topLeftY", "width", "height"].forEach(function(id) {
       document.getElementById(id).addEventListener("input", function() {
         updateBoxFromInputs();
+
+        if (selectedSpriteId !== null) {
+          const sprite = sprites.find(function(item) {
+            return item.id === selectedSpriteId;
+          });
+
+          if (sprite) {
+            sprite.left = Number(document.getElementById("topLeftX").value || 0);
+            sprite.top = Number(document.getElementById("topLeftY").value || 0);
+            sprite.width = Number(document.getElementById("width").value || 0);
+            sprite.height = Number(document.getElementById("height").value || 0);
+
+            renderSavedSprites();
+            renderDropdown();
+            selectSprite(sprite.id);
+            return;
+          }
+        }
+
         calculateSprite();
       });
     });
 
     updateBoxFromInputs();
-    calculateSprite();
+    prepareNextSpriteName();
     renderDropdown();
-    renderAllCode();
   </script>
 
 </body>
