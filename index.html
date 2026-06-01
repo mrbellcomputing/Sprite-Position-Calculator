@@ -252,8 +252,8 @@
   function getGridPosition(event) {
     const rect = grid.getBoundingClientRect();
 
-    let x = Math.round(event.clientX - rect.left);
-    let y = Math.round(event.clientY - rect.top);
+    let x = Math.round(event.clientX - rect.left - grid.clientLeft);
+    let y = Math.round(event.clientY - rect.top - grid.clientTop);
 
     if (x < 0) x = 0;
     if (x > 400) x = 400;
