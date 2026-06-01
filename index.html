@@ -1,92 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprite Position Calculator</title>
-<style>
-body{font-family:Verdana,Arial,sans-serif;background:#E0E0E0;color:#222;padding:20px;line-height:1.5}
-.container{width:fit-content;margin:auto;background:white;padding:20px;border-radius:15px;box-shadow:0 4px 12px rgba(0,0,0,.15);position:relative}
-.browser-button{position:absolute;top:20px;left:20px;background:#333;color:#fff;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
-.browser-button:hover{background:#555}
-h1{text-align:center;color:#333;font-size:30px;margin-bottom:15px}
-.main-layout{display:flex;gap:40px;align-items:flex-start}
-.right-panel{display:flex;flex-direction:column;gap:18px;margin-top:70px;min-width:260px;padding-right:20px}
-label{font-weight:bold;font-size:16px;width:120px}
-.purple-label{color:#b66ad6}
-.control-group{display:flex;align-items:center;gap:10px}
-input{width:100px;padding:8px;font-size:16px}
-.output{margin-top:25px;padding:15px;background:#f0f0f0;border-radius:10px}
-.block-output{display:inline-flex;flex-wrap:wrap;gap:4px;background:#b66ad6;padding:8px 10px;border-radius:8px;font-family:Consolas,monospace}
-.var-name{background:white;padding:2px 6px;border-radius:6px}
-.function-block{background:#ff8f8f;padding:3px 6px;border-radius:6px}
-.number-block{background:#ffe2e2;padding:1px 4px;border-radius:5px}
-.grid{position:relative;width:400px;height:400px;border:4px solid #333;background:white;
-background-image:linear-gradient(to right,#DDDDDD 1px,transparent 1px),linear-gradient(to bottom,#DDDDDD 1px,transparent 1px);
-background-size:50px 50px;cursor:crosshair}
-.marker{position:absolute;width:12px;height:12px;background:#b66ad6;border:2px solid white;border-radius:50%;transform:translate(-50%,-50%);display:none}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprite Position Calculator</title>
+
+  <style>
+    body {
+      font-family: Verdana, Arial, sans-serif;
+      background: #E0E0E0;
+      color: #222;
+      padding: 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: fit-content;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .browser-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: #333;
+      color: white;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .browser-button:hover {
+      background: #555;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      font-size: 30px;
+      margin-bottom: 15px;
+    }
+
+    .main-layout {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 70px;
+      min-width: 260px;
+      padding-right: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      color: black;
+      font-size: 16px;
+      white-space: nowrap;
+      width: 120px;
+    }
+
+    .purple-label {
+      color: #b66ad6;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input {
+      width: 100px;
+      padding: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .output {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .block-output {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      background: #b66ad6;
+      color: #111;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-family: Consolas, monospace;
+      font-size: 15px;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
+    }
+
+    .var-name {
+      background: white;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .function-block {
+      background: #ff8f8f;
+      padding: 3px 6px;
+      border-radius: 6px;
+    }
+
+    .number-block {
+      background: #ffe2e2;
+      padding: 1px 4px;
+      border-radius: 5px;
+    }
+
+    .grid {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      border: 4px solid #333;
+      background-color: white;
+      background-image:
+        linear-gradient(to right, #DDDDDD 1px, transparent 1px),
+        linear-gradient(to bottom, #DDDDDD 1px, transparent 1px);
+      background-size: 50px 50px;
+      cursor: crosshair;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .draw-box {
+      position: absolute;
+      border: 3px solid #b66ad6;
+      background: rgba(182,106,214,0.2);
+      pointer-events: none;
+      display: none;
+      box-sizing: border-box;
+    }
+
+    .small-button {
+      margin-top: 15px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
+
 <div class="container">
-<a class="browser-button" href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/" target="_blank">Open in Browser</a>
-<h1>Sprite Position Calculator</h1>
 
-<div class="block-output">
-var <span class="var-name">cube</span> =
-<span class="function-block">createSprite(<span class="number-block">X</span>, <span class="number-block">Y</span>, <span class="number-block">width</span>, <span class="number-block">height</span>)</span>;
-</div>
+  <a class="browser-button"
+     href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/"
+     target="_blank">
+    Open in Browser
+  </a>
 
-<div class="main-layout">
-<div>
-<p><strong>Click anywhere on the 400 × 400 Game Lab grid:</strong></p>
-<div class="grid" id="gameGrid"><div class="marker" id="marker"></div></div>
-</div>
+  <h1>Sprite Position Calculator</h1>
 
-<div class="right-panel">
-<div class="control-group"><label>Sprite Name</label><input type="text" id="spriteName" value="cube"></div>
-<div class="control-group"><label class="purple-label">Top Left X</label><input type="number" id="topLeftX" value="200" step="1"></div>
-<div class="control-group"><label class="purple-label">Top Left Y</label><input type="number" id="topLeftY" value="100" step="1"></div>
-<div class="control-group"><label>Width</label><input type="number" id="width" value="50" step="5"></div>
-<div class="control-group"><label>Height</label><input type="number" id="height" value="50" step="10"></div>
-</div>
-</div>
+  <div class="block-output">
+    var <span class="var-name">cube</span> =
+    <span class="function-block">
+      createSprite(
+      <span class="number-block">X</span>,
+      <span class="number-block">Y</span>,
+      <span class="number-block">width</span>,
+      <span class="number-block">height</span>)
+    </span>;
+  </div>
 
-<div class="output">
-<p><strong>Your coordinates and size requirements are :</strong></p>
-<div class="block-output" id="codeOutput"></div>
-</div>
+  <div class="main-layout">
+
+    <div>
+      <p><strong>Draw a wall or sprite on the 400 × 400 Game Lab grid:</strong></p>
+
+      <div class="grid" id="gameGrid">
+        <div class="draw-box" id="drawBox"></div>
+      </div>
+
+      <button class="small-button" onclick="clearDrawing()">Clear Drawing</button>
+    </div>
+
+    <div class="right-panel">
+
+      <div class="control-group">
+        <label>Sprite Name</label>
+        <input type="text" id="spriteName" value="wall1">
+      </div>
+
+      <div class="control-group">
+        <label class="purple-label">Top Left X</label>
+        <input type="number" id="topLeftX" value="50" step="1">
+      </div>
+
+      <div class="control-group">
+        <label class="purple-label">Top Left Y</label>
+        <input type="number" id="topLeftY" value="50" step="1">
+      </div>
+
+      <div class="control-group">
+        <label>Width</label>
+        <input type="number" id="width" value="100" step="5">
+      </div>
+
+      <div class="control-group">
+        <label>Height</label>
+        <input type="number" id="height" value="50" step="10">
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="output">
+    <p><strong>Your coordinates and size requirements are :</strong></p>
+    <div class="block-output" id="codeOutput"></div>
+  </div>
+
 </div>
 
 <script>
-function calculateSprite(){
-let spriteName=document.getElementById("spriteName").value||"cube";
-let x=Number(document.getElementById("topLeftX").value||0);
-let y=Number(document.getElementById("topLeftY").value||0);
-let width=Number(document.getElementById("width").value||0);
-let height=Number(document.getElementById("height").value||0);
-let centreX=x+(width/2);
-let centreY=y+(height/2);
-document.getElementById("codeOutput").innerHTML="var <span class='var-name'>"+spriteName+"</span> = <span class='function-block'>createSprite(<span class='number-block'>"+centreX+"</span>, <span class='number-block'>"+centreY+"</span>, <span class='number-block'>"+width+"</span>, <span class='number-block'>"+height+"</span>)</span>;";
-}
-function gridClicked(event){
-const grid=document.getElementById("gameGrid");
-const rect=grid.getBoundingClientRect();
-const x=Math.round(event.clientX-rect.left);
-const y=Math.round(event.clientY-rect.top);
-document.getElementById("topLeftX").value=x;
-document.getElementById("topLeftY").value=y;
-const marker=document.getElementById("marker");
-marker.style.left=x+"px";
-marker.style.top=y+"px";
-marker.style.display="block";
-calculateSprite();
-}
-document.getElementById("gameGrid").addEventListener("click",gridClicked);
-["spriteName","topLeftX","topLeftY","width","height"].forEach(id=>{
-document.getElementById(id).addEventListener("input",calculateSprite);
-});
-calculateSprite();
+  let isDrawing = false;
+  let startX = 0;
+  let startY = 0;
+
+  const grid = document.getElementById("gameGrid");
+
+  function getGridPosition(event) {
+    const rect = grid.getBoundingClientRect();
+
+    let x = Math.round(event.clientX - rect.left);
+    let y = Math.round(event.clientY - rect.top);
+
+    if (x < 0) x = 0;
+    if (x > 400) x = 400;
+    if (y < 0) y = 0;
+    if (y > 400) y = 400;
+
+    return { x, y };
+  }
+
+  function startDrawing(event) {
+    event.preventDefault();
+
+    grid.setPointerCapture(event.pointerId);
+
+    const position = getGridPosition(event);
+
+    isDrawing = true;
+    startX = position.x;
+    startY = position.y;
+
+    updateDrawing(startX, startY, startX, startY);
+  }
+
+  function drawingMove(event) {
+    if (!isDrawing) return;
+
+    event.preventDefault();
+
+    const position = getGridPosition(event);
+    updateDrawing(startX, startY, position.x, position.y);
+  }
+
+  function stopDrawing(event) {
+    if (!isDrawing) return;
+
+    event.preventDefault();
+
+    const position = getGridPosition(event);
+
+    isDrawing = false;
+
+    updateDrawing(startX, startY, position.x, position.y);
+    updateInputsFromDrawing(startX, startY, position.x, position.y);
+  }
+
+  function updateDrawing(x1, y1, x2, y2) {
+    const box = document.getElementById("drawBox");
+
+    const left = Math.min(x1, x2);
+    const top = Math.min(y1, y2);
+    const width = Math.abs(x2 - x1);
+    const height = Math.abs(y2 - y1);
+
+    box.style.left = left + "px";
+    box.style.top = top + "px";
+    box.style.width = width + "px";
+    box.style.height = height + "px";
+    box.style.display = "block";
+  }
+
+  function updateInputsFromDrawing(x1, y1, x2, y2) {
+    let left = Math.min(x1, x2);
+    let top = Math.min(y1, y2);
+    let width = Math.abs(x2 - x1);
+    let height = Math.abs(y2 - y1);
+
+    if (width < 1) width = 1;
+    if (height < 1) height = 1;
+
+    document.getElementById("topLeftX").value = left;
+    document.getElementById("topLeftY").value = top;
+    document.getElementById("width").value = width;
+    document.getElementById("height").value = height;
+
+    calculateSprite();
+  }
+
+  function updateBoxFromInputs() {
+    const left = Number(document.getElementById("topLeftX").value || 0);
+    const top = Number(document.getElementById("topLeftY").value || 0);
+    const width = Number(document.getElementById("width").value || 0);
+    const height = Number(document.getElementById("height").value || 0);
+
+    const box = document.getElementById("drawBox");
+
+    box.style.left = left + "px";
+    box.style.top = top + "px";
+    box.style.width = width + "px";
+    box.style.height = height + "px";
+    box.style.display = "block";
+  }
+
+  function clearDrawing() {
+    document.getElementById("drawBox").style.display = "none";
+  }
+
+  function calculateSprite() {
+    const spriteName = document.getElementById("spriteName").value || "sprite1";
+
+    const topLeftX = Number(document.getElementById("topLeftX").value || 0);
+    const topLeftY = Number(document.getElementById("topLeftY").value || 0);
+    const width = Number(document.getElementById("width").value || 0);
+    const height = Number(document.getElementById("height").value || 0);
+
+    const centreX = topLeftX + (width / 2);
+    const centreY = topLeftY + (height / 2);
+
+    document.getElementById("codeOutput").innerHTML =
+      "var <span class='var-name'>" +
+      spriteName +
+      "</span> = " +
+      "<span class='function-block'>createSprite(" +
+      "<span class='number-block'>" + centreX + "</span>, " +
+      "<span class='number-block'>" + centreY + "</span>, " +
+      "<span class='number-block'>" + width + "</span>, " +
+      "<span class='number-block'>" + height + "</span>)</span>;";
+  }
+
+  grid.addEventListener("pointerdown", startDrawing);
+  grid.addEventListener("pointermove", drawingMove);
+  grid.addEventListener("pointerup", stopDrawing);
+  grid.addEventListener("pointercancel", stopDrawing);
+
+  ["spriteName", "topLeftX", "topLeftY", "width", "height"].forEach(function(id) {
+    document.getElementById(id).addEventListener("input", function() {
+      updateBoxFromInputs();
+      calculateSprite();
+    });
+  });
+
+  updateBoxFromInputs();
+  calculateSprite();
 </script>
+
 </body>
 </html>
