@@ -90,6 +90,13 @@
       box-sizing: border-box;
     }
 
+    select {
+      width: 220px;
+      padding: 8px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
     .output {
       margin-top: 25px;
       padding: 15px;
@@ -111,6 +118,12 @@
       font-family: Consolas, monospace;
       font-size: 15px;
       box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
+    }
+
+    .code-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .var-name {
@@ -148,15 +161,49 @@
 
     .draw-box {
       position: absolute;
-      border: 3px solid #b66ad6;
+      border: 3px dashed #b66ad6;
       background: rgba(182,106,214,0.2);
       pointer-events: none;
       display: none;
       box-sizing: border-box;
+      z-index: 10;
+    }
+
+    .saved-sprite {
+      position: absolute;
+      border: 2px solid #b66ad6;
+      background: rgba(182,106,214,0.20);
+      box-sizing: border-box;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    .saved-sprite.selected-sprite {
+      border: 3px solid #333;
+      background: rgba(182,106,214,0.35);
+    }
+
+    .saved-label {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #222;
+      pointer-events: none;
+      background: rgba(255,255,255,0.75);
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
     }
 
     .small-button {
-      margin-top: 15px;
       background: #333;
       color: white;
       border: none;
@@ -166,227 +213,416 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    .small-button:hover {
+      background: #555;
+    }
+
+    .danger-button {
+      background: #8b1e1e;
+    }
+
+    .danger-button:hover {
+      background: #a52a2a;
+    }
+
   </style>
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <a class="browser-button"
-     href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/"
-     target="_blank">
-    Open in Browser
-  </a>
+    <a class="browser-button"
+       href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/"
+       target="_blank"
+       rel="noopener noreferrer">
+      Open in Browser
+    </a>
 
-  <h1>Sprite Position Calculator</h1>
+    <h1>Sprite Position Calculator</h1>
 
-  <div class="block-output">
-    var <span class="var-name">cube</span> =
-    <span class="function-block">
-      createSprite(
-      <span class="number-block">X</span>,
-      <span class="number-block">Y</span>,
-      <span class="number-block">width</span>,
-      <span class="number-block">height</span>)
-    </span>;
-  </div>
-
-  <div class="main-layout">
-
-    <div>
-      <p><strong>Draw a wall or sprite on the 400 × 400 Game Lab grid:</strong></p>
-
-      <div class="grid" id="gameGrid">
-        <div class="draw-box" id="drawBox"></div>
-      </div>
-
-      <button class="small-button" onclick="clearDrawing()">Clear Drawing</button>
+    <div class="block-output">
+      var <span class="var-name">cube</span> =
+      <span class="function-block">
+        createSprite(
+        <span class="number-block">X</span>,
+        <span class="number-block">Y</span>,
+        <span class="number-block">width</span>,
+        <span class="number-block">height</span>)
+      </span>;
     </div>
 
-    <div class="right-panel">
+    <div class="main-layout">
 
-      <div class="control-group">
-        <label>Sprite Name</label>
-        <input type="text" id="spriteName" value="wall1">
+      <div>
+        <p><strong>Draw walls or sprites on the 400 × 400 Game Lab grid:</strong></p>
+
+        <div class="grid" id="gameGrid">
+          <div class="draw-box" id="drawBox"></div>
+        </div>
+
+        <div class="button-row">
+          <button class="small-button" onclick="addCurrentSprite()">Add / Save Sprite</button>
+          <button class="small-button danger-button" onclick="clearSelectedSprite()">Clear Selected Sprite</button>
+          <button class="small-button danger-button" onclick="clearAllSprites()">Clear All</button>
+        </div>
       </div>
 
-      <div class="control-group">
-        <label class="purple-label">Top Left X</label>
-        <input type="number" id="topLeftX" value="50" step="1">
-      </div>
+      <div class="right-panel">
 
-      <div class="control-group">
-        <label class="purple-label">Top Left Y</label>
-        <input type="number" id="topLeftY" value="50" step="1">
-      </div>
+        <div class="control-group">
+          <label>Sprite Name</label>
+          <input type="text" id="spriteName" value="wall1">
+        </div>
 
-      <div class="control-group">
-        <label>Width</label>
-        <input type="number" id="width" value="100" step="5">
-      </div>
+        <div class="control-group">
+          <label class="purple-label">Top Left X</label>
+          <input type="number" id="topLeftX" value="50" step="1">
+        </div>
 
-      <div class="control-group">
-        <label>Height</label>
-        <input type="number" id="height" value="50" step="10">
+        <div class="control-group">
+          <label class="purple-label">Top Left Y</label>
+          <input type="number" id="topLeftY" value="50" step="1">
+        </div>
+
+        <div class="control-group">
+          <label>Width</label>
+          <input type="number" id="width" value="100" step="5">
+        </div>
+
+        <div class="control-group">
+          <label>Height</label>
+          <input type="number" id="height" value="50" step="10">
+        </div>
+
+        <div class="control-group">
+          <label>Select Sprite</label>
+          <select id="spriteSelector" onchange="selectSpriteFromDropdown()">
+            <option value="">No saved sprites</option>
+          </select>
+        </div>
+
       </div>
 
     </div>
 
+    <div class="output">
+      <p><strong>Current sprite code:</strong></p>
+      <div class="block-output" id="codeOutput"></div>
+    </div>
+
+    <div class="output">
+      <p><strong>All saved sprite codes:</strong></p>
+      <div class="code-list" id="allCodeOutput"></div>
+    </div>
+
   </div>
 
-  <div class="output">
-    <p><strong>Your coordinates and size requirements are :</strong></p>
-    <div class="block-output" id="codeOutput"></div>
-  </div>
+  <script>
+    let isDrawing = false;
+    let startX = 0;
+    let startY = 0;
+    let sprites = [];
+    let selectedSpriteId = null;
 
-</div>
+    const grid = document.getElementById("gameGrid");
 
-<script>
-  let isDrawing = false;
-  let startX = 0;
-  let startY = 0;
+    function getGridPosition(event) {
+      const rect = grid.getBoundingClientRect();
 
-  const grid = document.getElementById("gameGrid");
+      let x = Math.round(event.clientX - rect.left - grid.clientLeft);
+      let y = Math.round(event.clientY - rect.top - grid.clientTop);
 
-  function getGridPosition(event) {
-    const rect = grid.getBoundingClientRect();
+      if (x < 0) x = 0;
+      if (x > 400) x = 400;
+      if (y < 0) y = 0;
+      if (y > 400) y = 400;
 
-    let x = Math.round(event.clientX - rect.left - grid.clientLeft);
-    let y = Math.round(event.clientY - rect.top - grid.clientTop);
+      return { x, y };
+    }
 
-    if (x < 0) x = 0;
-    if (x > 400) x = 400;
-    if (y < 0) y = 0;
-    if (y > 400) y = 400;
+    function startDrawing(event) {
+      event.preventDefault();
 
-    return { x, y };
-  }
+      grid.setPointerCapture(event.pointerId);
 
-  function startDrawing(event) {
-    event.preventDefault();
+      const position = getGridPosition(event);
 
-    grid.setPointerCapture(event.pointerId);
+      isDrawing = true;
+      startX = position.x;
+      startY = position.y;
 
-    const position = getGridPosition(event);
+      updateDrawing(startX, startY, startX, startY);
+    }
 
-    isDrawing = true;
-    startX = position.x;
-    startY = position.y;
+    function drawingMove(event) {
+      if (!isDrawing) return;
 
-    updateDrawing(startX, startY, startX, startY);
-  }
+      event.preventDefault();
 
-  function drawingMove(event) {
-    if (!isDrawing) return;
+      const position = getGridPosition(event);
+      updateDrawing(startX, startY, position.x, position.y);
+    }
 
-    event.preventDefault();
+    function stopDrawing(event) {
+      if (!isDrawing) return;
 
-    const position = getGridPosition(event);
-    updateDrawing(startX, startY, position.x, position.y);
-  }
+      event.preventDefault();
 
-  function stopDrawing(event) {
-    if (!isDrawing) return;
+      const position = getGridPosition(event);
 
-    event.preventDefault();
+      isDrawing = false;
 
-    const position = getGridPosition(event);
+      updateDrawing(startX, startY, position.x, position.y);
+      updateInputsFromDrawing(startX, startY, position.x, position.y);
+    }
 
-    isDrawing = false;
+    function updateDrawing(x1, y1, x2, y2) {
+      const box = document.getElementById("drawBox");
 
-    updateDrawing(startX, startY, position.x, position.y);
-    updateInputsFromDrawing(startX, startY, position.x, position.y);
-  }
+      const left = Math.min(x1, x2);
+      const top = Math.min(y1, y2);
+      const width = Math.abs(x2 - x1);
+      const height = Math.abs(y2 - y1);
 
-  function updateDrawing(x1, y1, x2, y2) {
-    const box = document.getElementById("drawBox");
+      box.style.left = left + "px";
+      box.style.top = top + "px";
+      box.style.width = width + "px";
+      box.style.height = height + "px";
+      box.style.display = "block";
+    }
 
-    const left = Math.min(x1, x2);
-    const top = Math.min(y1, y2);
-    const width = Math.abs(x2 - x1);
-    const height = Math.abs(y2 - y1);
+    function updateInputsFromDrawing(x1, y1, x2, y2) {
+      let left = Math.min(x1, x2);
+      let top = Math.min(y1, y2);
+      let width = Math.abs(x2 - x1);
+      let height = Math.abs(y2 - y1);
 
-    box.style.left = left + "px";
-    box.style.top = top + "px";
-    box.style.width = width + "px";
-    box.style.height = height + "px";
-    box.style.display = "block";
-  }
+      if (width < 1) width = 1;
+      if (height < 1) height = 1;
 
-  function updateInputsFromDrawing(x1, y1, x2, y2) {
-    let left = Math.min(x1, x2);
-    let top = Math.min(y1, y2);
-    let width = Math.abs(x2 - x1);
-    let height = Math.abs(y2 - y1);
+      document.getElementById("topLeftX").value = left;
+      document.getElementById("topLeftY").value = top;
+      document.getElementById("width").value = width;
+      document.getElementById("height").value = height;
 
-    if (width < 1) width = 1;
-    if (height < 1) height = 1;
+      calculateSprite();
+    }
 
-    document.getElementById("topLeftX").value = left;
-    document.getElementById("topLeftY").value = top;
-    document.getElementById("width").value = width;
-    document.getElementById("height").value = height;
+    function updateBoxFromInputs() {
+      const left = Number(document.getElementById("topLeftX").value || 0);
+      const top = Number(document.getElementById("topLeftY").value || 0);
+      const width = Number(document.getElementById("width").value || 0);
+      const height = Number(document.getElementById("height").value || 0);
 
-    calculateSprite();
-  }
+      const box = document.getElementById("drawBox");
 
-  function updateBoxFromInputs() {
-    const left = Number(document.getElementById("topLeftX").value || 0);
-    const top = Number(document.getElementById("topLeftY").value || 0);
-    const width = Number(document.getElementById("width").value || 0);
-    const height = Number(document.getElementById("height").value || 0);
+      box.style.left = left + "px";
+      box.style.top = top + "px";
+      box.style.width = width + "px";
+      box.style.height = height + "px";
+      box.style.display = "block";
+    }
 
-    const box = document.getElementById("drawBox");
+    function getCurrentSpriteData() {
+      const name = document.getElementById("spriteName").value || "sprite1";
+      const left = Number(document.getElementById("topLeftX").value || 0);
+      const top = Number(document.getElementById("topLeftY").value || 0);
+      const width = Number(document.getElementById("width").value || 0);
+      const height = Number(document.getElementById("height").value || 0);
 
-    box.style.left = left + "px";
-    box.style.top = top + "px";
-    box.style.width = width + "px";
-    box.style.height = height + "px";
-    box.style.display = "block";
-  }
+      return {
+        id: Date.now(),
+        name: name,
+        left: left,
+        top: top,
+        width: width,
+        height: height
+      };
+    }
 
-  function clearDrawing() {
-    document.getElementById("drawBox").style.display = "none";
-  }
+    function spriteToCode(sprite) {
+      const centreX = sprite.left + (sprite.width / 2);
+      const centreY = sprite.top + (sprite.height / 2);
 
-  function calculateSprite() {
-    const spriteName = document.getElementById("spriteName").value || "sprite1";
+      return {
+        centreX: centreX,
+        centreY: centreY,
+        html:
+          "var <span class='var-name'>" +
+          sprite.name +
+          "</span> = " +
+          "<span class='function-block'>createSprite(" +
+          "<span class='number-block'>" + centreX + "</span>, " +
+          "<span class='number-block'>" + centreY + "</span>, " +
+          "<span class='number-block'>" + sprite.width + "</span>, " +
+          "<span class='number-block'>" + sprite.height + "</span>)</span>;"
+      };
+    }
 
-    const topLeftX = Number(document.getElementById("topLeftX").value || 0);
-    const topLeftY = Number(document.getElementById("topLeftY").value || 0);
-    const width = Number(document.getElementById("width").value || 0);
-    const height = Number(document.getElementById("height").value || 0);
+    function addCurrentSprite() {
+      const sprite = getCurrentSpriteData();
+      sprites.push(sprite);
+      selectedSpriteId = sprite.id;
+      renderSavedSprites();
+      renderDropdown();
+      renderAllCode();
+    }
 
-    const centreX = topLeftX + (width / 2);
-    const centreY = topLeftY + (height / 2);
+    function renderSavedSprites() {
+      const oldSprites = document.querySelectorAll(".saved-sprite");
 
-    document.getElementById("codeOutput").innerHTML =
-      "var <span class='var-name'>" +
-      spriteName +
-      "</span> = " +
-      "<span class='function-block'>createSprite(" +
-      "<span class='number-block'>" + centreX + "</span>, " +
-      "<span class='number-block'>" + centreY + "</span>, " +
-      "<span class='number-block'>" + width + "</span>, " +
-      "<span class='number-block'>" + height + "</span>)</span>;";
-  }
+      oldSprites.forEach(function(spriteBox) {
+        spriteBox.remove();
+      });
 
-  grid.addEventListener("pointerdown", startDrawing);
-  grid.addEventListener("pointermove", drawingMove);
-  grid.addEventListener("pointerup", stopDrawing);
-  grid.addEventListener("pointercancel", stopDrawing);
+      sprites.forEach(function(sprite) {
+        const div = document.createElement("div");
+        div.className = "saved-sprite";
 
-  ["spriteName", "topLeftX", "topLeftY", "width", "height"].forEach(function(id) {
-    document.getElementById(id).addEventListener("input", function() {
+        if (sprite.id === selectedSpriteId) {
+          div.classList.add("selected-sprite");
+        }
+
+        div.style.left = sprite.left + "px";
+        div.style.top = sprite.top + "px";
+        div.style.width = sprite.width + "px";
+        div.style.height = sprite.height + "px";
+
+        div.onclick = function(event) {
+          event.stopPropagation();
+          selectSprite(sprite.id);
+        };
+
+        const label = document.createElement("div");
+        label.className = "saved-label";
+        label.textContent = sprite.name;
+
+        div.appendChild(label);
+        grid.appendChild(div);
+      });
+    }
+
+    function selectSprite(id) {
+      selectedSpriteId = id;
+
+      const sprite = sprites.find(function(item) {
+        return item.id === id;
+      });
+
+      if (!sprite) return;
+
+      document.getElementById("spriteName").value = sprite.name;
+      document.getElementById("topLeftX").value = sprite.left;
+      document.getElementById("topLeftY").value = sprite.top;
+      document.getElementById("width").value = sprite.width;
+      document.getElementById("height").value = sprite.height;
+
+      document.getElementById("spriteSelector").value = id;
+
       updateBoxFromInputs();
       calculateSprite();
-    });
-  });
+      renderSavedSprites();
+    }
 
-  updateBoxFromInputs();
-  calculateSprite();
-</script>
+    function selectSpriteFromDropdown() {
+      const id = Number(document.getElementById("spriteSelector").value);
+
+      if (!id) return;
+
+      selectSprite(id);
+    }
+
+    function clearSelectedSprite() {
+      if (selectedSpriteId === null) return;
+
+      sprites = sprites.filter(function(sprite) {
+        return sprite.id !== selectedSpriteId;
+      });
+
+      selectedSpriteId = null;
+
+      renderSavedSprites();
+      renderDropdown();
+      renderAllCode();
+      calculateSprite();
+    }
+
+    function clearAllSprites() {
+      sprites = [];
+      selectedSpriteId = null;
+
+      renderSavedSprites();
+      renderDropdown();
+      renderAllCode();
+    }
+
+    function renderDropdown() {
+      const selector = document.getElementById("spriteSelector");
+
+      selector.innerHTML = "";
+
+      if (sprites.length === 0) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "No saved sprites";
+        selector.appendChild(option);
+        return;
+      }
+
+      sprites.forEach(function(sprite) {
+        const option = document.createElement("option");
+        option.value = sprite.id;
+        option.textContent = sprite.name + " (" + sprite.left + "," + sprite.top + ")";
+        selector.appendChild(option);
+      });
+
+      if (selectedSpriteId !== null) {
+        selector.value = selectedSpriteId;
+      }
+    }
+
+    function renderAllCode() {
+      const allCodeOutput = document.getElementById("allCodeOutput");
+
+      allCodeOutput.innerHTML = "";
+
+      if (sprites.length === 0) {
+        allCodeOutput.textContent = "No saved sprites yet.";
+        return;
+      }
+
+      sprites.forEach(function(sprite) {
+        const line = document.createElement("div");
+        line.className = "block-output";
+        line.innerHTML = spriteToCode(sprite).html;
+        allCodeOutput.appendChild(line);
+      });
+    }
+
+    function calculateSprite() {
+      const currentSprite = getCurrentSpriteData();
+      document.getElementById("codeOutput").innerHTML = spriteToCode(currentSprite).html;
+    }
+
+    grid.addEventListener("pointerdown", startDrawing);
+    grid.addEventListener("pointermove", drawingMove);
+    grid.addEventListener("pointerup", stopDrawing);
+    grid.addEventListener("pointercancel", stopDrawing);
+
+    ["spriteName", "topLeftX", "topLeftY", "width", "height"].forEach(function(id) {
+      document.getElementById(id).addEventListener("input", function() {
+        updateBoxFromInputs();
+        calculateSprite();
+      });
+    });
+
+    updateBoxFromInputs();
+    calculateSprite();
+    renderDropdown();
+    renderAllCode();
+  </script>
 
 </body>
 </html>
