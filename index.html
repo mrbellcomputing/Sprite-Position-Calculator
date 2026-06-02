@@ -273,7 +273,7 @@
 
   <div class="container">
 
-    <div class="version">v17</div>
+    <div class="version">v18</div>
 
     <a class="browser-button"
        href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/"
@@ -355,39 +355,23 @@
     </div>
 
     <div class="import-section">
-      <p><strong>Paste existing Game Lab sprite code here:</strong></p>
+      <p><strong>Paste, recreate and copy Game Lab sprite code here:</strong></p>
 
-      <textarea id="importCode" placeholder="Paste code such as:
+      <textarea id="spriteCodeBox" placeholder="Paste existing Game Lab sprite code here, for example:
 var wall1 = createSprite(208, 181, 145, 22);
+var wall2 = createSprite(336, 138, 33, 126);
 var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
       <div class="button-row">
         <button class="small-button" onclick="importSpritesFromCode()">Recreate Sprites on Grid</button>
-        <button class="small-button danger-button" onclick="clearImportBox()">Clear Paste Box</button>
+        <button class="small-button" onclick="generateUpdatedCode()">Update Code From Grid</button>
+        <button class="small-button" onclick="copyUpdatedCode()">Copy Code</button>
+        <button class="small-button danger-button" onclick="clearCodeBox()">Clear Code Box</button>
       </div>
 
       <div class="small-note">
-        This reads <code>createSprite(x, y, width, height)</code> code and recreates the sprites on the grid.
-        It converts centre coordinates back into top-left positions automatically.
-      </div>
-    </div>
-
-    <div class="import-section">
-      <p><strong>Copy updated Game Lab sprite code here:</strong></p>
-
-      <textarea id="generatedCode"
-                class="generated-code-box"
-                readonly
-                placeholder="Your updated sprite code will appear here."></textarea>
-
-      <div class="button-row">
-        <button class="small-button" onclick="generateUpdatedCode()">Generate Updated Code</button>
-        <button class="small-button" onclick="copyUpdatedCode()">Copy Updated Code</button>
-      </div>
-
-      <div class="small-note">
-        This creates fresh JavaScript using the sprite names and the latest positions from the grid.
-        Paste it back into Game Lab.
+        Paste existing <code>createSprite(x, y, width, height)</code> code here and recreate it on the grid.
+        After moving, drawing, renaming or clearing sprites, this same box updates with the latest JavaScript ready to paste back into Game Lab.
       </div>
     </div>
 
@@ -751,7 +735,7 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
     }
 
     function importSpritesFromCode() {
-      const code = document.getElementById("importCode").value;
+      const code = document.getElementById("spriteCodeBox").value;
 
       const regex = /var\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*createSprite\s*\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*\)\s*;/g;
 
@@ -793,15 +777,17 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
       if (importedCount === 0) {
         alert("No createSprite lines were found. Check that the code looks like: var wall1 = createSprite(200, 100, 50, 50);");
+      } else {
+        generateUpdatedCode();
       }
     }
 
-    function clearImportBox() {
-      document.getElementById("importCode").value = "";
+    function clearCodeBox() {
+      document.getElementById("spriteCodeBox").value = "";
     }
 
     function generateUpdatedCode() {
-      const output = document.getElementById("generatedCode");
+      const output = document.getElementById("spriteCodeBox");
 
       if (!output) return;
 
@@ -840,7 +826,7 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
     function copyUpdatedCode() {
       generateUpdatedCode();
 
-      const output = document.getElementById("generatedCode");
+      const output = document.getElementById("spriteCodeBox");
 
       output.select();
       output.setSelectionRange(0, 99999);
