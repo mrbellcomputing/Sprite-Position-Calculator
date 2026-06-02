@@ -4,57 +4,306 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sprite Position Calculator</title>
+
   <style>
-    body { font-family: Verdana, Arial, sans-serif; background: #E0E0E0; color: #222; padding: 20px; line-height: 1.5; }
-    .container { width: fit-content; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); position: relative; }
-    .version { position: absolute; top: 10px; right: 15px; font-size: 11px; color: #888; }
-    .browser-button { position: absolute; top: 20px; left: 20px; background: #333; color: white; border-radius: 8px; padding: 10px 14px; font-size: 14px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; }
-    .browser-button:hover { background: #555; }
-    h1 { text-align: center; color: #333; font-size: 30px; margin-bottom: 15px; }
-    .main-layout { display: flex; gap: 40px; align-items: flex-start; }
-    .right-panel { display: flex; flex-direction: column; gap: 18px; margin-top: 70px; min-width: 260px; padding-right: 20px; }
-    label { font-weight: bold; color: black; font-size: 16px; white-space: nowrap; width: 120px; }
-    .purple-label { color: #b66ad6; }
-    .control-group { display: flex; align-items: center; gap: 10px; }
-    input { width: 120px; padding: 8px; font-size: 16px; box-sizing: border-box; }
-    select { width: 220px; padding: 8px; font-size: 15px; box-sizing: border-box; }
-    textarea { width: 100%; height: 110px; font-family: Consolas, monospace; font-size: 13px; box-sizing: border-box; padding: 10px; resize: vertical; }
-    .output { margin-top: 25px; padding: 15px; background: #f0f0f0; border-radius: 10px; font-size: 16px; }
-    .block-output { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px; background: #b66ad6; color: #111; padding: 8px 10px; border-radius: 8px; margin-top: 10px; font-family: Consolas, monospace; font-size: 15px; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); }
-    .var-name { background: white; padding: 2px 6px; border-radius: 6px; }
-    .function-block { background: #ff8f8f; padding: 3px 6px; border-radius: 6px; }
-    .number-block { background: #ffe2e2; padding: 1px 4px; border-radius: 5px; }
-    .grid { position: relative; width: 400px; height: 400px; border: 4px solid #333; background-color: white; background-image: linear-gradient(to right,#DDDDDD 1px,transparent 1px), linear-gradient(to bottom,#DDDDDD 1px,transparent 1px); background-size: 50px 50px; cursor: crosshair; user-select: none; touch-action: none; }
-    .draw-box { position: absolute; border: 3px dashed #b66ad6; background: rgba(182,106,214,0.2); pointer-events: none; display: none; box-sizing: border-box; z-index: 10; }
-    .saved-sprite { position: absolute; border: 2px solid #b66ad6; background: rgba(182,106,214,0.20); box-sizing: border-box; cursor: pointer; z-index: 5; }
-    .saved-sprite.selected-sprite { border: 3px solid #333; background: rgba(182,106,214,0.35); }
-    .imported-sprite { border-color: #444; background: rgba(80,80,80,0.18); }
-    .coin-sprite { border-color: #d6a600; background: rgba(255,215,0,0.45); border-radius: 50%; }
-    .saved-label { position: absolute; top: 2px; left: 4px; font-size: 11px; font-weight: bold; color: #222; pointer-events: none; background: rgba(255,255,255,0.75); padding: 1px 3px; border-radius: 3px; }
-    .button-row { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-    .small-button { background: #333; color: white; border: none; border-radius: 8px; padding: 8px 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
-    .small-button:hover { background: #555; }
-    .danger-button { background: #8b1e1e; }
-    .danger-button:hover { background: #a52a2a; }
-    .import-section { margin-top: 20px; padding: 15px; background: #f7f7f7; border-radius: 10px; max-width: 710px; }
-    .small-note { font-size: 13px; color: #555; margin-top: 6px; }
+    body {
+      font-family: Verdana, Arial, sans-serif;
+      background: #E0E0E0;
+      color: #222;
+      padding: 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: fit-content;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .version {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 11px;
+      color: #888;
+      font-family: Verdana, Arial, sans-serif;
+    }
+
+    .browser-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: #333;
+      color: white;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .browser-button:hover {
+      background: #555;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      font-size: 30px;
+      margin-bottom: 15px;
+    }
+
+    .main-layout {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 70px;
+      min-width: 260px;
+      padding-right: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      color: black;
+      font-size: 16px;
+      white-space: nowrap;
+      width: 120px;
+    }
+
+    .purple-label {
+      color: #b66ad6;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input {
+      width: 120px;
+      padding: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    select {
+      width: 220px;
+      padding: 8px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      width: 100%;
+      height: 115px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      box-sizing: border-box;
+      padding: 10px;
+      resize: vertical;
+    }
+
+    .generated-code-box {
+      height: 145px;
+      background: #ffffff;
+    }
+
+    .output,
+    .import-section {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      font-size: 16px;
+      max-width: 710px;
+    }
+
+    .import-section {
+      background: #f7f7f7;
+    }
+
+    .block-output {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      background: #b66ad6;
+      color: #111;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-family: Consolas, monospace;
+      font-size: 15px;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15);
+    }
+
+    .var-name {
+      background: white;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .function-block {
+      background: #ff8f8f;
+      padding: 3px 6px;
+      border-radius: 6px;
+    }
+
+    .number-block {
+      background: #ffe2e2;
+      padding: 1px 4px;
+      border-radius: 5px;
+    }
+
+    .grid {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      border: 4px solid #333;
+      background-color: white;
+      background-image:
+        linear-gradient(to right, #DDDDDD 1px, transparent 1px),
+        linear-gradient(to bottom, #DDDDDD 1px, transparent 1px);
+      background-size: 50px 50px;
+      cursor: crosshair;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .draw-box {
+      position: absolute;
+      border: 3px dashed #b66ad6;
+      background: rgba(182,106,214,0.2);
+      pointer-events: none;
+      display: none;
+      box-sizing: border-box;
+      z-index: 10;
+    }
+
+    .saved-sprite {
+      position: absolute;
+      border: 2px solid #b66ad6;
+      background: rgba(182,106,214,0.20);
+      box-sizing: border-box;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    .saved-sprite.selected-sprite {
+      border: 3px solid #333;
+      background: rgba(182,106,214,0.35);
+    }
+
+    .imported-sprite {
+      border-color: #444;
+      background: rgba(80,80,80,0.18);
+    }
+
+    .coin-sprite {
+      border-color: #d6a600;
+      background: rgba(255,215,0,0.45);
+      border-radius: 50%;
+    }
+
+    .saved-label {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #222;
+      pointer-events: none;
+      background: rgba(255,255,255,0.75);
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .small-button {
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .small-button:hover {
+      background: #555;
+    }
+
+    .danger-button {
+      background: #8b1e1e;
+    }
+
+    .danger-button:hover {
+      background: #a52a2a;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: #555;
+      margin-top: 6px;
+    }
   </style>
 </head>
+
 <body>
+
   <div class="container">
-    <div class="version">v13</div>
-    <a class="browser-button" href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/" target="_blank" rel="noopener noreferrer">Open in Browser</a>
+
+    <div class="version">v16</div>
+
+    <a class="browser-button"
+       href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/"
+       target="_blank"
+       rel="noopener noreferrer">
+      Open in Browser
+    </a>
+
     <h1>Sprite Position Calculator</h1>
 
     <div class="block-output">
       var <span class="var-name">sprite1</span> =
-      <span class="function-block">createSprite(<span class="number-block">X</span>, <span class="number-block">Y</span>, <span class="number-block">width</span>, <span class="number-block">height</span>)</span>;
+      <span class="function-block">
+        createSprite(
+        <span class="number-block">X</span>,
+        <span class="number-block">Y</span>,
+        <span class="number-block">width</span>,
+        <span class="number-block">height</span>)
+      </span>;
     </div>
 
     <div class="main-layout">
+
       <div>
         <p><strong>Draw walls, sprites or coins on the 400 × 400 Game Lab grid:</strong></p>
-        <div class="grid" id="gameGrid"><div class="draw-box" id="drawBox"></div></div>
+
+        <div class="grid" id="gameGrid">
+          <div class="draw-box" id="drawBox"></div>
+        </div>
+
         <div class="button-row">
           <button class="small-button" onclick="addCurrentSprite()">Add / Save Sprite</button>
           <button class="small-button danger-button" onclick="clearSelectedSprite()">Clear Selected Sprite</button>
@@ -63,13 +312,41 @@
       </div>
 
       <div class="right-panel">
-        <div class="control-group"><label>Sprite Name</label><input type="text" id="spriteName" value="sprite1"></div>
-        <div class="control-group"><label class="purple-label">Top Left X</label><input type="number" id="topLeftX" value="50" step="1"></div>
-        <div class="control-group"><label class="purple-label">Top Left Y</label><input type="number" id="topLeftY" value="50" step="1"></div>
-        <div class="control-group"><label>Width</label><input type="number" id="width" value="100" step="5"></div>
-        <div class="control-group"><label>Height</label><input type="number" id="height" value="50" step="10"></div>
-        <div class="control-group"><label>Select Sprite</label><select id="spriteSelector" onchange="selectSpriteFromDropdown()"><option value="">No saved sprites</option></select></div>
+
+        <div class="control-group">
+          <label>Sprite Name</label>
+          <input type="text" id="spriteName" value="sprite1">
+        </div>
+
+        <div class="control-group">
+          <label class="purple-label">Top Left X</label>
+          <input type="number" id="topLeftX" value="50" step="1">
+        </div>
+
+        <div class="control-group">
+          <label class="purple-label">Top Left Y</label>
+          <input type="number" id="topLeftY" value="50" step="1">
+        </div>
+
+        <div class="control-group">
+          <label>Width</label>
+          <input type="number" id="width" value="100" step="5">
+        </div>
+
+        <div class="control-group">
+          <label>Height</label>
+          <input type="number" id="height" value="50" step="10">
+        </div>
+
+        <div class="control-group">
+          <label>Select Sprite</label>
+          <select id="spriteSelector" onchange="selectSpriteFromDropdown()">
+            <option value="">No saved sprites</option>
+          </select>
+        </div>
+
       </div>
+
     </div>
 
     <div class="output">
@@ -79,6 +356,7 @@
 
     <div class="import-section">
       <p><strong>Paste existing Game Lab sprite code here:</strong></p>
+
       <textarea id="importCode" placeholder="Paste code such as:
 var wall1 = createSprite(208, 181, 145, 22);
 var snitch = createSprite(10, 10, 25, 25);"></textarea>
@@ -93,6 +371,26 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
         It converts centre coordinates back into top-left positions automatically.
       </div>
     </div>
+
+    <div class="import-section">
+      <p><strong>Copy updated Game Lab sprite code here:</strong></p>
+
+      <textarea id="generatedCode"
+                class="generated-code-box"
+                readonly
+                placeholder="Your updated sprite code will appear here."></textarea>
+
+      <div class="button-row">
+        <button class="small-button" onclick="generateUpdatedCode()">Generate Updated Code</button>
+        <button class="small-button" onclick="copyUpdatedCode()">Copy Updated Code</button>
+      </div>
+
+      <div class="small-note">
+        This creates fresh JavaScript using the sprite names and the latest positions from the grid.
+        Paste it back into Game Lab.
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -102,9 +400,12 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
     let sprites = [];
     let selectedSpriteId = null;
     let nextSpriteNumber = 1;
+
     const grid = document.getElementById("gameGrid");
 
-    function getNextSpriteName() { return "sprite" + nextSpriteNumber; }
+    function getNextSpriteName() {
+      return "sprite" + nextSpriteNumber;
+    }
 
     function prepareNextSpriteName() {
       document.getElementById("spriteName").value = getNextSpriteName();
@@ -113,32 +414,44 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
     function updateNextSpriteNumberFromName(name) {
       const match = name.match(/^sprite(\d+)$/i);
+
       if (match) {
         const number = Number(match[1]);
-        if (number >= nextSpriteNumber) nextSpriteNumber = number + 1;
+
+        if (number >= nextSpriteNumber) {
+          nextSpriteNumber = number + 1;
+        }
       }
     }
 
     function getGridPosition(event) {
       const rect = grid.getBoundingClientRect();
+
       let x = Math.round(event.clientX - rect.left - grid.clientLeft);
       let y = Math.round(event.clientY - rect.top - grid.clientTop);
+
       if (x < 0) x = 0;
       if (x > 400) x = 400;
       if (y < 0) y = 0;
       if (y > 400) y = 400;
+
       return { x, y };
     }
 
     function startDrawing(event) {
       event.preventDefault();
+
       selectedSpriteId = null;
       document.getElementById("spriteSelector").value = "";
+
       grid.setPointerCapture(event.pointerId);
+
       const position = getGridPosition(event);
+
       isDrawing = true;
       startX = position.x;
       startY = position.y;
+
       updateDrawing(startX, startY, startX, startY);
       renderSavedSprites();
       calculateSprite();
@@ -146,26 +459,34 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
     function drawingMove(event) {
       if (!isDrawing) return;
+
       event.preventDefault();
+
       const position = getGridPosition(event);
       updateDrawing(startX, startY, position.x, position.y);
     }
 
     function stopDrawing(event) {
       if (!isDrawing) return;
+
       event.preventDefault();
+
       const position = getGridPosition(event);
+
       isDrawing = false;
+
       updateDrawing(startX, startY, position.x, position.y);
       updateInputsFromDrawing(startX, startY, position.x, position.y);
     }
 
     function updateDrawing(x1, y1, x2, y2) {
       const box = document.getElementById("drawBox");
+
       const left = Math.min(x1, x2);
       const top = Math.min(y1, y2);
       const width = Math.abs(x2 - x1);
       const height = Math.abs(y2 - y1);
+
       box.style.left = left + "px";
       box.style.top = top + "px";
       box.style.width = width + "px";
@@ -178,12 +499,15 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
       let top = Math.min(y1, y2);
       let width = Math.abs(x2 - x1);
       let height = Math.abs(y2 - y1);
+
       if (width < 1) width = 1;
       if (height < 1) height = 1;
+
       document.getElementById("topLeftX").value = left;
       document.getElementById("topLeftY").value = top;
       document.getElementById("width").value = width;
       document.getElementById("height").value = height;
+
       calculateSprite();
     }
 
@@ -192,7 +516,9 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
       const top = Number(document.getElementById("topLeftY").value || 0);
       const width = Number(document.getElementById("width").value || 0);
       const height = Number(document.getElementById("height").value || 0);
+
       const box = document.getElementById("drawBox");
+
       box.style.left = left + "px";
       box.style.top = top + "px";
       box.style.width = width + "px";
@@ -202,22 +528,39 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
     function cleanSpriteName(name) {
       let cleaned = name.trim();
-      if (cleaned === "") cleaned = getNextSpriteName();
+
+      if (cleaned === "") {
+        cleaned = getNextSpriteName();
+      }
+
       cleaned = cleaned.replace(/\s+/g, "_");
       cleaned = cleaned.replace(/[^a-zA-Z0-9_]/g, "");
-      if (/^[0-9]/.test(cleaned)) cleaned = "sprite_" + cleaned;
-      if (cleaned === "") cleaned = getNextSpriteName();
+
+      if (/^[0-9]/.test(cleaned)) {
+        cleaned = "sprite_" + cleaned;
+      }
+
+      if (cleaned === "") {
+        cleaned = getNextSpriteName();
+      }
+
       return cleaned;
     }
 
     function getCurrentSpriteData() {
+      const name = cleanSpriteName(document.getElementById("spriteName").value);
+      const left = Number(document.getElementById("topLeftX").value || 0);
+      const top = Number(document.getElementById("topLeftY").value || 0);
+      const width = Number(document.getElementById("width").value || 0);
+      const height = Number(document.getElementById("height").value || 0);
+
       return {
         id: Date.now(),
-        name: cleanSpriteName(document.getElementById("spriteName").value),
-        left: Number(document.getElementById("topLeftX").value || 0),
-        top: Number(document.getElementById("topLeftY").value || 0),
-        width: Number(document.getElementById("width").value || 0),
-        height: Number(document.getElementById("height").value || 0),
+        name: name,
+        left: left,
+        top: top,
+        width: width,
+        height: height,
         imported: false
       };
     }
@@ -225,7 +568,10 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
     function spriteToCode(sprite) {
       const centreX = sprite.left + (sprite.width / 2);
       const centreY = sprite.top + (sprite.height / 2);
-      return "var <span class='var-name'>" + sprite.name + "</span> = " +
+
+      return "var <span class='var-name'>" +
+        sprite.name +
+        "</span> = " +
         "<span class='function-block'>createSprite(" +
         "<span class='number-block'>" + centreX + "</span>, " +
         "<span class='number-block'>" + centreY + "</span>, " +
@@ -233,40 +579,74 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
         "<span class='number-block'>" + sprite.height + "</span>)</span>;";
     }
 
+    function spriteToPlainCode(sprite) {
+      const centreX = sprite.left + (sprite.width / 2);
+      const centreY = sprite.top + (sprite.height / 2);
+
+      return "var " + sprite.name + " = createSprite(" +
+        centreX + ", " +
+        centreY + ", " +
+        sprite.width + ", " +
+        sprite.height + ");";
+    }
+
     function addCurrentSprite() {
       const sprite = getCurrentSpriteData();
+
       sprites.push(sprite);
       selectedSpriteId = sprite.id;
+
       updateNextSpriteNumberFromName(sprite.name);
       nextSpriteNumber = nextSpriteNumber + 1;
+
       renderSavedSprites();
       renderDropdown();
       selectSprite(sprite.id);
+
       selectedSpriteId = null;
       document.getElementById("spriteSelector").value = "";
       prepareNextSpriteName();
       renderSavedSprites();
+      generateUpdatedCode();
     }
 
     function renderSavedSprites() {
-      document.querySelectorAll(".saved-sprite").forEach(spriteBox => spriteBox.remove());
+      const oldSprites = document.querySelectorAll(".saved-sprite");
+
+      oldSprites.forEach(function(spriteBox) {
+        spriteBox.remove();
+      });
+
       sprites.forEach(function(sprite) {
         const div = document.createElement("div");
         div.className = "saved-sprite";
-        if (sprite.imported) div.classList.add("imported-sprite");
-        if (sprite.name.toLowerCase().includes("coin")) div.classList.add("coin-sprite");
-        if (sprite.id === selectedSpriteId) div.classList.add("selected-sprite");
+
+        if (sprite.imported) {
+          div.classList.add("imported-sprite");
+        }
+
+        if (sprite.name.toLowerCase().includes("coin")) {
+          div.classList.add("coin-sprite");
+        }
+
+        if (sprite.id === selectedSpriteId) {
+          div.classList.add("selected-sprite");
+        }
+
         div.style.left = sprite.left + "px";
         div.style.top = sprite.top + "px";
         div.style.width = sprite.width + "px";
         div.style.height = sprite.height + "px";
+
         div.onclick = function(event) {
           event.stopPropagation();
           selectSprite(sprite.id);
         };
+
         const label = document.createElement("div");
         label.className = "saved-label";
         label.textContent = sprite.name;
+
         div.appendChild(label);
         grid.appendChild(div);
       });
@@ -274,66 +654,94 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
     function selectSprite(id) {
       selectedSpriteId = id;
-      const sprite = sprites.find(item => item.id === id);
+
+      const sprite = sprites.find(function(item) {
+        return item.id === id;
+      });
+
       if (!sprite) return;
+
       document.getElementById("spriteName").value = sprite.name;
       document.getElementById("topLeftX").value = sprite.left;
       document.getElementById("topLeftY").value = sprite.top;
       document.getElementById("width").value = sprite.width;
       document.getElementById("height").value = sprite.height;
+
       document.getElementById("spriteSelector").value = id;
+
       updateBoxFromInputs();
       document.getElementById("codeOutput").innerHTML = spriteToCode(sprite);
       renderSavedSprites();
+      generateUpdatedCode();
     }
 
     function selectSpriteFromDropdown() {
       const id = Number(document.getElementById("spriteSelector").value);
+
       if (!id) {
         selectedSpriteId = null;
         prepareNextSpriteName();
         renderSavedSprites();
         return;
       }
+
       selectSprite(id);
     }
 
     function clearSelectedSprite() {
       if (selectedSpriteId === null) return;
-      sprites = sprites.filter(sprite => sprite.id !== selectedSpriteId);
+
+      sprites = sprites.filter(function(sprite) {
+        return sprite.id !== selectedSpriteId;
+      });
+
       selectedSpriteId = null;
+
       document.getElementById("drawBox").style.display = "none";
       document.getElementById("spriteSelector").value = "";
+
       renderSavedSprites();
       renderDropdown();
       prepareNextSpriteName();
+      generateUpdatedCode();
     }
 
     function clearAllSprites() {
       sprites = [];
       selectedSpriteId = null;
       nextSpriteNumber = 1;
+
       document.getElementById("spriteName").value = "sprite1";
       document.getElementById("spriteSelector").innerHTML = '<option value="">No saved sprites</option>';
       document.getElementById("drawBox").style.display = "none";
+
       renderSavedSprites();
       calculateSprite();
+      generateUpdatedCode();
     }
 
     function renderDropdown() {
       const selector = document.getElementById("spriteSelector");
+
       selector.innerHTML = "";
+
       const blankOption = document.createElement("option");
       blankOption.value = "";
       blankOption.textContent = "New sprite";
       selector.appendChild(blankOption);
+
       sprites.forEach(function(sprite) {
         const option = document.createElement("option");
         option.value = sprite.id;
         option.textContent = sprite.name + " (" + sprite.left + "," + sprite.top + ")";
         selector.appendChild(option);
       });
-      selector.value = selectedSpriteId !== null ? selectedSpriteId : "";
+
+      if (selectedSpriteId !== null) {
+        selector.value = selectedSpriteId;
+      } else {
+        selector.value = "";
+      }
     }
 
     function calculateSprite() {
@@ -343,36 +751,101 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
     function importSpritesFromCode() {
       const code = document.getElementById("importCode").value;
+
       const regex = /var\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*createSprite\s*\(\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*,\s*([0-9.]+)\s*\)\s*;/g;
+
       let match;
       let importedCount = 0;
+
       while ((match = regex.exec(code)) !== null) {
         const name = cleanSpriteName(match[1]);
         const centreX = Number(match[2]);
         const centreY = Number(match[3]);
         const width = Number(match[4]);
         const height = Number(match[5]);
+
+        const left = centreX - (width / 2);
+        const top = centreY - (height / 2);
+
         const sprite = {
           id: Date.now() + importedCount,
           name: name,
-          left: centreX - (width / 2),
-          top: centreY - (height / 2),
+          left: left,
+          top: top,
           width: width,
           height: height,
           imported: true
         };
+
         sprites.push(sprite);
         updateNextSpriteNumberFromName(name);
-        importedCount++;
+        importedCount = importedCount + 1;
       }
+
       renderSavedSprites();
       renderDropdown();
-      if (sprites.length > 0) selectSprite(sprites[sprites.length - 1].id);
-      if (importedCount === 0) alert("No createSprite lines were found. Check the code looks like: var wall1 = createSprite(200, 100, 50, 50);");
+      generateUpdatedCode();
+
+      if (sprites.length > 0) {
+        selectSprite(sprites[sprites.length - 1].id);
+      }
+
+      if (importedCount === 0) {
+        alert("No createSprite lines were found. Check that the code looks like: var wall1 = createSprite(200, 100, 50, 50);");
+      }
     }
 
     function clearImportBox() {
       document.getElementById("importCode").value = "";
+    }
+
+    function generateUpdatedCode() {
+      const output = document.getElementById("generatedCode");
+
+      if (sprites.length === 0) {
+        output.value = "// No saved sprites yet.";
+        return;
+      }
+
+      let lines = [];
+
+      sprites
+        .slice()
+        .sort(function(a, b) {
+
+          const aMatch = a.name.match(/(\d+)$/);
+          const bMatch = b.name.match(/(\d+)$/);
+
+          if (aMatch && bMatch) {
+            return Number(aMatch[1]) - Number(bMatch[1]);
+          }
+
+          return a.name.localeCompare(b.name);
+
+        })
+        .forEach(function(sprite) {
+
+          lines.push(spriteToPlainCode(sprite));
+
+        });
+
+      output.value = lines.join("\n");
+    }
+
+    function copyUpdatedCode() {
+      generateUpdatedCode();
+
+      const output = document.getElementById("generatedCode");
+
+      output.select();
+      output.setSelectionRange(0, 99999);
+
+      navigator.clipboard.writeText(output.value).then(function() {
+        alert("Updated sprite code copied.");
+      }).catch(function() {
+        document.execCommand("copy");
+        alert("Updated sprite code copied.");
+      });
     }
 
     grid.addEventListener("pointerdown", startDrawing);
@@ -382,34 +855,46 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
     document.getElementById("spriteName").addEventListener("input", function() {
       if (selectedSpriteId !== null) {
-        const sprite = sprites.find(item => item.id === selectedSpriteId);
+        const sprite = sprites.find(function(item) {
+          return item.id === selectedSpriteId;
+        });
+
         if (sprite) {
           sprite.name = cleanSpriteName(document.getElementById("spriteName").value);
           renderSavedSprites();
           renderDropdown();
           selectSprite(sprite.id);
+          generateUpdatedCode();
           return;
         }
       }
+
       calculateSprite();
     });
 
     ["topLeftX", "topLeftY", "width", "height"].forEach(function(id) {
       document.getElementById(id).addEventListener("input", function() {
         updateBoxFromInputs();
+
         if (selectedSpriteId !== null) {
-          const sprite = sprites.find(item => item.id === selectedSpriteId);
+          const sprite = sprites.find(function(item) {
+            return item.id === selectedSpriteId;
+          });
+
           if (sprite) {
             sprite.left = Number(document.getElementById("topLeftX").value || 0);
             sprite.top = Number(document.getElementById("topLeftY").value || 0);
             sprite.width = Number(document.getElementById("width").value || 0);
             sprite.height = Number(document.getElementById("height").value || 0);
+
             renderSavedSprites();
             renderDropdown();
             selectSprite(sprite.id);
+            generateUpdatedCode();
             return;
           }
         }
+
         calculateSprite();
       });
     });
@@ -417,6 +902,8 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
     updateBoxFromInputs();
     prepareNextSpriteName();
     renderDropdown();
+    generateUpdatedCode();
   </script>
+
 </body>
 </html>
