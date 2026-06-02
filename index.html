@@ -273,7 +273,7 @@
 
   <div class="container">
 
-    <div class="version">v16</div>
+    <div class="version">v17</div>
 
     <a class="browser-button"
        href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/"
@@ -716,6 +716,7 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
       document.getElementById("drawBox").style.display = "none";
 
       renderSavedSprites();
+      renderDropdown();
       calculateSprite();
       generateUpdatedCode();
     }
@@ -802,8 +803,12 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
     function generateUpdatedCode() {
       const output = document.getElementById("generatedCode");
 
+      if (!output) return;
+
+      output.value = "";
+
       if (sprites.length === 0) {
-        output.value = "// No saved sprites yet.";
+        output.value = "";
         return;
       }
 
