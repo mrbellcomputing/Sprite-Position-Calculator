@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maze Maker</title>
+  <title>Maze Maker v21</title>
 
   <style>
     body {
@@ -70,7 +70,7 @@
       flex-direction: column;
       gap: 18px;
       margin-top: 70px;
-      min-width: 260px;
+      display:none; min-width:0;
       padding-right: 20px;
     }
 
@@ -128,7 +128,7 @@
       background: #f0f0f0;
       border-radius: 10px;
       font-size: 16px;
-      max-width: 710px;
+      max-width: 400px;
     }
 
     .import-section {
@@ -282,7 +282,7 @@
       Open in Browser
     </a>
 
-    <h1>Sprite Position Calculator</h1>
+    <h1>Maze Maker</h1>
 
     <div class="block-output">
       var <span class="var-name">sprite1</span> =
@@ -308,42 +308,25 @@
           <button class="small-button" onclick="addCurrentSprite()">Add / Save Sprite</button>
           <button class="small-button danger-button" onclick="clearSelectedSprite()">Clear Selected Sprite</button>
           <button class="small-button danger-button" onclick="clearAllSprites()">Clear All</button>
-        </div>
-      </div>
-
-      <div class="right-panel">
-
-        <div class="control-group">
+        
+<div class="control-group">
           <label>Sprite Name</label>
           <input type="text" id="spriteName" value="sprite1">
         </div>
-
-        <div class="control-group">
-          <label class="purple-label">Top Left X</label>
-          <input type="number" id="topLeftX" value="50" step="1">
-        </div>
-
-        <div class="control-group">
-          <label class="purple-label">Top Left Y</label>
-          <input type="number" id="topLeftY" value="50" step="1">
-        </div>
-
-        <div class="control-group">
-          <label>Width</label>
-          <input type="number" id="width" value="100" step="5">
-        </div>
-
-        <div class="control-group">
-          <label>Height</label>
-          <input type="number" id="height" value="50" step="10">
-        </div>
-
-        <div class="control-group">
+<div class="control-group">
           <label>Select Sprite</label>
           <select id="spriteSelector" onchange="selectSpriteFromDropdown()">
             <option value="">No saved sprites</option>
           </select>
         </div>
+
+      </div>
+
+      <div class="right-panel">
+
+        
+
+        
 
       </div>
 
