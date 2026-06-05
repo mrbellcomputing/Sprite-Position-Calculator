@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sprite Position Calculator</title>
+  <title>Maze Maker v42</title>
 
   <style>
     body {
@@ -60,12 +60,10 @@
     }
 
     .main-layout {
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
+      display:block;
     }
 
-    .right-panel {
+    .right-panel { display:none !important;
       display: flex;
       flex-direction: column;
       gap: 18px;
@@ -128,7 +126,7 @@
       background: #f0f0f0;
       border-radius: 10px;
       font-size: 16px;
-      max-width: 710px;
+      width: calc(100% - 10px); max-width:none;
     }
 
     .import-section {
@@ -266,14 +264,49 @@
       color: #555;
       margin-top: 6px;
     }
-  </style>
+  
+.grid-wrapper{
+  display:flex;
+  justify-content:center;
+  margin-top:20px;
+  margin-bottom:20px;
+}
+.coord-container{
+  display:grid;
+  grid-template-columns:40px 400px;
+  grid-template-rows:25px 400px;
+  gap:4px;
+}
+.top-coords{
+  grid-column:2;
+  display:grid;
+  grid-template-columns:repeat(9,1fr);
+  font-size:12px;
+  text-align:center;
+}
+.left-coords{
+  grid-row:2;
+  display:grid;
+  grid-template-rows:repeat(9,1fr);
+  font-size:12px;
+  align-items:start;
+  text-align:right;
+  padding-right:5px;
+}
+
+
+.grid-button-row{
+  justify-content:center;
+}
+
+</style>
 </head>
 
 <body>
 
   <div class="container">
 
-    <div class="version">v18</div>
+    <div class="version">v42</div>
 
     <a class="browser-button"
        href="https://mrbellcomputing.github.io/Sprite-Position-Calculator/"
@@ -282,7 +315,7 @@
       Open in Browser
     </a>
 
-    <h1>Sprite Position Calculator</h1>
+    <h1>Maze Maker</h1>
 
     <div class="block-output">
       var <span class="var-name">sprite1</span> =
@@ -300,11 +333,26 @@
       <div>
         <p><strong>Draw walls, sprites or coins on the 400 × 400 Game Lab grid:</strong></p>
 
-        <div class="grid" id="gameGrid">
-          <div class="draw-box" id="drawBox"></div>
-        </div>
+        
+<div class="grid-wrapper">
+<div class="coord-container">
+  <div></div>
+  <div class="top-coords">
+    <div>0</div><div>50</div><div>100</div><div>150</div><div>200</div><div>250</div><div>300</div><div>350</div><div>400</div>
+  </div>
 
-        <div class="button-row">
+  <div class="left-coords">
+    <div>0</div><div>50</div><div>100</div><div>150</div><div>200</div><div>250</div><div>300</div><div>350</div><div>400</div>
+  </div>
+
+  <div class="grid" id="gameGrid">
+    <div class="draw-box" id="drawBox"></div>
+  </div>
+</div>
+</div>
+
+
+        <div class="button-row grid-button-row">
           <button class="small-button" onclick="addCurrentSprite()">Add / Save Sprite</button>
           <button class="small-button danger-button" onclick="clearSelectedSprite()">Clear Selected Sprite</button>
           <button class="small-button danger-button" onclick="clearAllSprites()">Clear All</button>
@@ -313,43 +361,49 @@
 
       <div class="right-panel">
 
-        <div class="control-group">
-          <label>Sprite Name</label>
-          <input type="text" id="spriteName" value="sprite1">
-        </div>
+        
 
-        <div class="control-group">
+        <div style="display:none"><div class="control-group">
           <label class="purple-label">Top Left X</label>
           <input type="number" id="topLeftX" value="50" step="1">
-        </div>
+        </div></div>
 
-        <div class="control-group">
+        <div style="display:none"><div class="control-group">
           <label class="purple-label">Top Left Y</label>
           <input type="number" id="topLeftY" value="50" step="1">
-        </div>
+        </div></div>
 
-        <div class="control-group">
+        <div style="display:none"><div class="control-group">
           <label>Width</label>
           <input type="number" id="width" value="100" step="5">
-        </div>
+        </div></div>
 
-        <div class="control-group">
+        <div style="display:none"><div class="control-group">
           <label>Height</label>
           <input type="number" id="height" value="50" step="10">
-        </div>
+        </div></div>
 
-        <div class="control-group">
-          <label>Select Sprite</label>
-          <select id="spriteSelector" onchange="selectSpriteFromDropdown()">
-            <option value="">No saved sprites</option>
-          </select>
-        </div>
+        
 
       </div>
 
     </div>
 
-    <div class="output">
+    
+<div style="margin-top:12px;margin-bottom:12px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+<div class="control-group">
+          <label>Sprite Name</label>
+          <input type="text" id="spriteName" value="sprite1">
+        </div>
+<div class="control-group">
+          <label>Select Sprite</label>
+          <select id="spriteSelector" onchange="selectSpriteFromDropdown()">
+            <option value="">No saved sprites</option>
+          </select>
+        </div>
+</div>
+
+<div class="output">
       <p><strong>Selected sprite code:</strong></p>
       <div class="block-output" id="codeOutput"></div>
     </div>
@@ -357,14 +411,11 @@
     <div class="import-section">
       <p><strong>Paste, recreate and copy Game Lab sprite code here:</strong></p>
 
-      <textarea id="spriteCodeBox" placeholder="Paste existing Game Lab sprite code here, for example:
-var wall1 = createSprite(208, 181, 145, 22);
-var wall2 = createSprite(336, 138, 33, 126);
-var snitch = createSprite(10, 10, 25, 25);"></textarea>
+      <textarea id="spriteCodeBox" placeholder="Paste Game Lab createSprite code here."></textarea>
 
       <div class="button-row">
         <button class="small-button" onclick="importSpritesFromCode()">Recreate Sprites on Grid</button>
-        <button class="small-button" onclick="generateUpdatedCode()">Update Code From Grid</button>
+        <button class="small-button" onclick="generateUpdatedCode()">Refresh Selected Sprite</button>
         <button class="small-button" onclick="copyUpdatedCode()">Copy Code</button>
         <button class="small-button danger-button" onclick="clearCodeBox()">Clear Code Box</button>
       </div>
@@ -576,6 +627,15 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
     function addCurrentSprite() {
       const sprite = getCurrentSpriteData();
+
+      const duplicate = sprites.some(function(existing) {
+        return existing.name.toLowerCase() === sprite.name.toLowerCase();
+      });
+
+      if (duplicate) {
+        alert("A sprite with that name already exists. Please choose a different name.");
+        return;
+      }
 
       sprites.push(sprite);
       selectedSpriteId = sprite.id;
@@ -791,36 +851,7 @@ var snitch = createSprite(10, 10, 25, 25);"></textarea>
 
       if (!output) return;
 
-      output.value = "";
-
-      if (sprites.length === 0) {
-        output.value = "";
-        return;
-      }
-
-      let lines = [];
-
-      sprites
-        .slice()
-        .sort(function(a, b) {
-
-          const aMatch = a.name.match(/(\d+)$/);
-          const bMatch = b.name.match(/(\d+)$/);
-
-          if (aMatch && bMatch) {
-            return Number(aMatch[1]) - Number(bMatch[1]);
-          }
-
-          return a.name.localeCompare(b.name);
-
-        })
-        .forEach(function(sprite) {
-
-          lines.push(spriteToPlainCode(sprite));
-
-        });
-
-      output.value = lines.join("\n");
+      return;
     }
 
     function copyUpdatedCode() {
